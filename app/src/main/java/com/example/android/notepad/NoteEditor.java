@@ -16,7 +16,16 @@
 
 package com.example.android.notepad;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
+import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ComponentName;
@@ -26,17 +35,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TimePicker;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
  * This Activity handles "editing" a note, where editing is responding to
@@ -77,6 +95,10 @@ public class NoteEditor extends Activity {
     private Cursor mCursor;
     private EditText mText;
     private String mOriginalContent;
+
+    private String time;
+    private String date;
+    private Button dateButton;
 
     /**
      * Defines a custom EditText View that draws lines between each line of text that is displayed.
@@ -135,9 +157,12 @@ public class NoteEditor extends Activity {
      * This method is called by Android when the Activity is first started. From the incoming
      * Intent, it determines what kind of editing is desired, and then does it.
      */
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_note_editor);
+//        dateButton = (Button)findViewById(R.id.dateButton);
 
         /*
          * Creates an Intent to use when the Activity object's result is sent back to the
@@ -613,4 +638,119 @@ public class NoteEditor extends Activity {
             mText.setText("");
         }
     }
+//    //闹钟
+//    private void createDateDialog(){
+//        final Calendar calendar;
+//        calendar = Calendar.getInstance();
+//        DatePickerDialog dialog = new DatePickerDialog(this, AlertDialog.THEME_HOLO_DARK,
+//                new DatePickerDialog.OnDateSetListener() {
+//                    @Override
+//                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+//                        String date=year+"-"+(month+1)+"-"+dayOfMonth;
+//                        if(time!=null){
+//                            dateButton.setText(date);
+//                        }else{
+//                            String text=calendar.get(Calendar.HOUR_OF_DAY)+":"+(calendar.get(Calendar.MINUTE)+5);
+//                            time=" "+text;//如果时间未指定，则默认为当前时间的5分钟后提醒
+//                            dateButton.setText(year+"-"+(month+1)+"-"+dayOfMonth+" "+text);
+//                        }
+//
+//                        dateButton.setVisibility(View.VISIBLE);
+//                    }
+//                },
+//                calendar.get(Calendar.YEAR),
+//                calendar.get(Calendar.MONTH),
+//                calendar.get(Calendar.DAY_OF_MONTH));
+//        dialog.getDatePicker().setMinDate(System.currentTimeMillis()-1000);//选择以当前时间开始，避免无效时间的选择
+//        dialog.setTitle("日期：");
+//        dialog.show();
+//    }
+//    private void createTimeDialog(){
+//        final Calendar calendar=Calendar.getInstance();
+//        TimePickerDialog dialog=new TimePickerDialog(this, AlertDialog.THEME_HOLO_DARK,new TimePickerDialog.OnTimeSetListener() {
+//            @Override
+//            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+//                String text=calendar.get(Calendar.YEAR)+"-"+(calendar.get(Calendar.MONTH)+1)+"-"+calendar.get(Calendar.DAY_OF_MONTH);
+//                /*
+//                 * 判断时间的选择是否为无效时间，在当前的时间之前
+//                 * */
+//                if(text.equals(date)||date==null){
+//                    if(hourOfDay<=calendar.get(Calendar.HOUR_OF_DAY))
+//
+//                        time=" "+calendar.get(Calendar.HOUR_OF_DAY)+":"+minute;
+//
+//                    else{
+//                        time=" "+hourOfDay+":"+minute;
+//                    }
+//                }else{
+//                    time=" "+hourOfDay+":"+minute;
+//                }
+//                if(date!=null){
+//                    dateButton.setText(date+time);
+//                }else{
+//                    date=text;
+//                    dateButton.setText(text+time);
+//                }
+//                dateButton.setVisibility(View.VISIBLE);
+//            }
+//        },
+//                calendar.get(Calendar.HOUR_OF_DAY),
+//                calendar.get(Calendar.MINUTE), true);
+//        dialog.setTitle("时间：");
+//
+//        dialog.show();
+//    }
+//    private void notifyMessage(){
+//
+//        if(time!=null&&date!=null){
+//            Log.d("222","22222time"+date+time);
+//            SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm");
+//            long t=System.currentTimeMillis()+1000;
+//            try {
+//                t=simpleDateFormat.parse(date+time).getTime();
+//            } catch (Exception e) {
+//                // TODO: handle exception
+//                e.printStackTrace();
+//            }
+//            //是Intent跳转到指定的广播处理
+//            Intent intent=new Intent(NoteEditor.this, RemindActionBroadcast.class);
+//            /*
+//             * 把文本的内容和标题存入Intent
+//             * */
+//            intent.putExtra("title",mCursor.getString(mCursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_TITLE)));
+//            intent.putExtra("context",mCursor.getString(mCursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_NOTE)));
+//            //将requestCode设为每个文本的ID以实现能够发送不同的信息，不会被覆盖
+//            PendingIntent pendingIntent= PendingIntent.getBroadcast(NoteEditor.this,mCursor.getInt(mCursor.getColumnIndex(NotePad.Notes._ID)),intent,PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//            Calendar calendar=Calendar.getInstance();
+//            calendar.setTimeInMillis(System.currentTimeMillis());
+//            calendar.add(Calendar.SECOND,(int)((t-System.currentTimeMillis())/1000));
+//
+//            //使用AlarmManager实现定时功能
+//            AlarmManager alarmManager=(AlarmManager)getSystemService(ALARM_SERVICE);
+//            alarmManager.set(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
+//        }
+//    }
+//    public static class RemindActionBroadcast extends BroadcastReceiver {
+//        public static int id=0;
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//
+//            PendingIntent pendingIntent=PendingIntent.getActivity(context,0,intent,0);
+//            NotificationManager notificationManager=(NotificationManager)context.getSystemService(context.NOTIFICATION_SERVICE);
+//            Notification.Builder mbuilder=new Notification.Builder(context);
+//            mbuilder.setContentTitle(intent.getStringExtra("title"));//设置通知栏标题
+//            mbuilder.setContentText(intent.getStringExtra("context"));//设置通知栏内容
+//            mbuilder.setSmallIcon(R.drawable.ic_menu_revert);//设置小图标
+//            mbuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_menu_revert));//设置大图标
+//            mbuilder.setContentIntent(pendingIntent);//设置点击跳转的Intent，因为没有设置uri，所以跳转为空
+//            mbuilder.setAutoCancel(true);//点击之后消失
+//            Notification notification=mbuilder.build();
+//            notificationManager.notify(id++,notification);//能够传送多条消息
+//        }
+//    }
+
+
+
+
 }

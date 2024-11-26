@@ -12,4 +12,23 @@
           android:icon="@drawable/ic_menu_compose"
           android:title="@string/menu_paste"
           android:alphabeticShortcut='p' />
+    <item android:id="@+id/menu_search"
+        android:icon="@drawable/ic_menu_search"
+        android:title="@string/menu_search"
+        android:alphabeticShortcut='s'
+        android:showAsAction="ifRoom"/>
+<!--&lt;!&ndash;    闹钟&ndash;&gt;-->
+<!--    <item-->
+<!--        android:id="@+id/action_set_alarm"-->
+<!--        android:title="设置闹钟"-->
+<!--        android:icon="@android:drawable/ic_lock_idle_alarm"-->
+<!--        android:showAsAction="ifRoom"/>-->
+
+<!--    <item-->
+<!--        android:id="@+id/action_clear_alarm"-->
+<!--        android:title="清除闹钟"-->
+<!--        android:icon="@android:drawable/ic_menu_delete"-->
+<!--        android:showAsAction="ifRoom"/>-->
+
+
 </menu>

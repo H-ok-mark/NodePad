@@ -18,14 +18,25 @@ package com.example.android.notepad;
 
 import com.example.android.notepad.NotePad;
 
+import android.app.AlarmManager;
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.ListActivity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
+import android.content.BroadcastReceiver;
 import android.content.ClipboardManager;
 import android.content.ClipData;
 import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,8 +47,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Displays a list of notes. Will display notes from the {@link Uri}
@@ -53,6 +76,12 @@ public class NotesList extends ListActivity {
 
     // For logging and debugging
     private static final String TAG = "NotesList";
+    private EditText editTextQuery;
+    private Button buttonSearch;
+
+    private String time;  // 用于存储闹钟的时间
+    private String date;  // 用于存储闹钟的日期
+    private Button dateButton;
 
     /**
      * The columns needed by the cursor adapter
@@ -60,6 +89,8 @@ public class NotesList extends ListActivity {
     private static final String[] PROJECTION = new String[] {
             NotePad.Notes._ID, // 0
             NotePad.Notes.COLUMN_NAME_TITLE, // 1
+            NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE,//Date
+            NotePad.Notes.COLUMN_NAME_NOTE//内容
     };
 
     /** The index of the title column */
@@ -68,74 +99,106 @@ public class NotesList extends ListActivity {
     /**
      * onCreate is called when Android starts this Activity from scratch.
      */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+//        // 获取当前窗口的根视图
+//        View rootView = getWindow().getDecorView();
+//        // 设置根视图的背景颜色
+//        rootView.setBackgroundColor(Color.parseColor("#FDFDFD"));
+//
         // The user does not need to hold down the key to use menu shortcuts.
         setDefaultKeyMode(DEFAULT_KEYS_SHORTCUT);
 
-        /* If no data is given in the Intent that started this Activity, then this Activity
-         * was started when the intent filter matched a MAIN action. We should use the default
-         * provider URI.
-         */
-        // Gets the intent that started this Activity.
+        // 获取传递过来的搜索条件
+        String searchQuery = getIntent().getStringExtra("searchQuery");
+
+        // 获取Intent
         Intent intent = getIntent();
 
-        // If there is no data associated with the Intent, sets the data to the default URI, which
-        // accesses a list of notes.
+        // 如果没有传递URI，设置默认URI
         if (intent.getData() == null) {
             intent.setData(NotePad.Notes.CONTENT_URI);
         }
 
-        /*
-         * Sets the callback for context menu activation for the ListView. The listener is set
-         * to be this Activity. The effect is that context menus are enabled for items in the
-         * ListView, and the context menu is handled by a method in NotesList.
-         */
+        // 设置ListView的上下文菜单监听
         getListView().setOnCreateContextMenuListener(this);
 
-        /* Performs a managed query. The Activity handles closing and requerying the cursor
-         * when needed.
-         *
-         * Please see the introductory note about performing provider operations on the UI thread.
-         */
+        // 定义查询条件
+        String selection = null;
+        String[] selectionArgs = null;
+
+        // 如果有搜索条件，设置查询条件
+        if (searchQuery != null && !searchQuery.isEmpty()) {
+            selection = NotePad.Notes.COLUMN_NAME_TITLE + " LIKE ?"; // 根据标题过滤
+            selectionArgs = new String[]{"%" + searchQuery + "%"}; // 搜索关键字
+        }
+
+        // 执行查询，传入过滤条件
         Cursor cursor = managedQuery(
-            getIntent().getData(),            // Use the default content URI for the provider.
-            PROJECTION,                       // Return the note ID and title for each note.
-            null,                             // No where clause, return all records.
-            null,                             // No where clause, therefore no where column values.
-            NotePad.Notes.DEFAULT_SORT_ORDER  // Use the default sort order.
+                getIntent().getData(),                // 使用默认内容URI
+                PROJECTION,                           // 返回的列
+                selection,                            // 设置筛选条件
+                selectionArgs,                        // 设置筛选条件的参数
+                NotePad.Notes.DEFAULT_SORT_ORDER      // 默认排序
         );
 
-        /*
-         * The following two arrays create a "map" between columns in the cursor and view IDs
-         * for items in the ListView. Each element in the dataColumns array represents
-         * a column name; each element in the viewID array represents the ID of a View.
-         * The SimpleCursorAdapter maps them in ascending order to determine where each column
-         * value will appear in the ListView.
-         */
+        // 创建映射列和视图ID
+        String[] dataColumns = { NotePad.Notes.COLUMN_NAME_TITLE,
+                NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE,
+                NotePad.Notes.COLUMN_NAME_NOTE };
+        int[] viewIDs = { android.R.id.text1,
+                android.R.id.text2 };
+//                ,R.id.content};
 
-        // The names of the cursor columns to display in the view, initialized to the title column
-        String[] dataColumns = { NotePad.Notes.COLUMN_NAME_TITLE } ;
+        // 创建SimpleCursorAdapter
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(
+                this,                                 // 上下文
+                R.layout.noteslist_item,              // 列表项布局
+                cursor,                               // 游标
+                dataColumns,                          // 数据列
+                viewIDs                               // 显示视图ID
+        );
 
-        // The view IDs that will display the cursor columns, initialized to the TextView in
-        // noteslist_item.xml
-        int[] viewIDs = { android.R.id.text1 };
+        // 设置ViewBinder来自定义时间显示
+        adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+            @Override
+            public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+                if (columnIndex == cursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE)) {
+                    long timestamp = cursor.getLong(columnIndex);
+                    String formattedDate = formatDate(timestamp);
+                    TextView textView = (TextView) view;
+                    textView.setText(formattedDate);
+                    return true;
+                }
+                return false; // 对其他列不做处理
+            }
+        });
 
-        // Creates the backing adapter for the ListView.
-        SimpleCursorAdapter adapter
-            = new SimpleCursorAdapter(
-                      this,                             // The Context for the ListView
-                      R.layout.noteslist_item,          // Points to the XML for a list item
-                      cursor,                           // The cursor to get items from
-                      dataColumns,
-                      viewIDs
-              );
-
-        // Sets the ListView's adapter to be the cursor adapter that was just created.
+        // 设置ListView的适配器
         setListAdapter(adapter);
     }
+
+
+    /**
+     * 格式化时间戳为日期字符串
+     */
+    private String formatDate(long timestamp) {
+        // 创建一个日期格式化器
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+
+        // 获取当前时区的时区对象
+        TimeZone timeZone = TimeZone.getDefault();
+
+        // 设置 SimpleDateFormat 使用当前时区
+        dateFormat.setTimeZone(timeZone);
+
+        // 将时间戳转换为 Date 对象，并格式化为字符串
+        return dateFormat.format(new Date(timestamp));
+    }
+
+
 
     /**
      * Called when the user clicks the device's Menu button the first time for
@@ -210,6 +273,7 @@ public class NotesList extends ListActivity {
             // Creates an array of menu items with one element. This will contain the EDIT option.
             MenuItem[] items = new MenuItem[1];
 
+
             // Creates an Intent with no specific action, using the URI of the selected note.
             Intent intent = new Intent(null, uri);
 
@@ -279,10 +343,42 @@ public class NotesList extends ListActivity {
            */
           startActivity(new Intent(Intent.ACTION_PASTE, getIntent().getData()));
           return true;
-        default:
-            return super.onOptionsItemSelected(item);
+            //搜索
+            case R.id.menu_search:
+                // 启动一个搜索界面或弹出输入框
+                // 在这里假设你使用一个 EditText 来获取搜索关键词
+
+                // 例如，你可以使用一个对话框来输入查询内容：
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("搜索笔记");
+
+                // 设置输入框
+                final EditText input = new EditText(this);
+                builder.setView(input);
+
+                builder.setPositiveButton("搜索", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        String searchQuery = input.getText().toString().trim();
+                        if (!searchQuery.isEmpty()) {
+                            // 创建一个Intent传递搜索关键词
+                            Intent intent = new Intent(NotesList.this, NotesList.class);
+                            intent.putExtra("searchQuery", searchQuery); // 将搜索内容传递给NotesList
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(NotesList.this, "请输入搜索内容", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                builder.setNegativeButton("取消", null);
+
+                // 显示对话框
+                builder.show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
+
 
     /**
      * This method is called when the user context-clicks a note in the list. NotesList registers
@@ -465,4 +561,5 @@ public class NotesList extends ListActivity {
             startActivity(new Intent(Intent.ACTION_EDIT, uri));
         }
     }
+
 }

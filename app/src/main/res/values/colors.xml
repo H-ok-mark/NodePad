@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="my_custom_color">#FF0000</color> <!-- 红色 -->
+    <color name="background_color">#FDFDFD</color> <!-- 灰白色 -->
+    <color name="item_background_color">#B1FDFDFD</color> <!-- 灰白色 -->
+    <color name="color">#000000</color> <!-- 灰白色 -->
+</resources>
