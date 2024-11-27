@@ -76,12 +76,6 @@ public class NotesList extends ListActivity {
 
     // For logging and debugging
     private static final String TAG = "NotesList";
-    private EditText editTextQuery;
-    private Button buttonSearch;
-
-    private String time;  // 用于存储闹钟的时间
-    private String date;  // 用于存储闹钟的日期
-    private Button dateButton;
 
     /**
      * The columns needed by the cursor adapter
@@ -103,10 +97,6 @@ public class NotesList extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        // 获取当前窗口的根视图
-//        View rootView = getWindow().getDecorView();
-//        // 设置根视图的背景颜色
-//        rootView.setBackgroundColor(Color.parseColor("#FDFDFD"));
 //
         // The user does not need to hold down the key to use menu shortcuts.
         setDefaultKeyMode(DEFAULT_KEYS_SHORTCUT);
@@ -147,9 +137,9 @@ public class NotesList extends ListActivity {
         // 创建映射列和视图ID
         String[] dataColumns = { NotePad.Notes.COLUMN_NAME_TITLE,
                 NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE,
-                NotePad.Notes.COLUMN_NAME_NOTE };
+                NotePad.Notes.COLUMN_NAME_NOTE};
         int[] viewIDs = { android.R.id.text1,
-                android.R.id.text2 };
+                android.R.id.text2, R.id.content};
 //                ,R.id.content};
 
         // 创建SimpleCursorAdapter
