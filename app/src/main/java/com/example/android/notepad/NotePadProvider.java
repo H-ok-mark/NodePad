@@ -63,7 +63,7 @@ public class NotePadProvider extends ContentProvider implements PipeDataWriter<C
     /**
      * The database version
      */
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 6;
 
     /**
      * A projection map used to select columns from the database
@@ -155,6 +155,10 @@ public class NotePadProvider extends ContentProvider implements PipeDataWriter<C
         sNotesProjectionMap.put(
                 NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE,
                 NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE);
+        //字体颜色
+        sNotesProjectionMap.put(
+                NotePad.Notes.COLUMN_NAME_FONT_COLOR,
+                NotePad.Notes.COLUMN_NAME_FONT_COLOR);
 
         /*
          * Creates an initializes a projection map for handling Live Folders
@@ -196,7 +200,9 @@ public class NotePadProvider extends ContentProvider implements PipeDataWriter<C
                    + NotePad.Notes.COLUMN_NAME_TITLE + " TEXT,"
                    + NotePad.Notes.COLUMN_NAME_NOTE + " TEXT,"
                    + NotePad.Notes.COLUMN_NAME_CREATE_DATE + " INTEGER,"
-                   + NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE + " INTEGER"
+                   + NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE + " INTEGER,"
+                   //字体颜色字段
+                   + NotePad.Notes.COLUMN_NAME_FONT_COLOR + " INTEGER"
                    + ");");
        }
 
@@ -538,6 +544,10 @@ public class NotePadProvider extends ContentProvider implements PipeDataWriter<C
         // If the values map doesn't contain note text, sets the value to an empty string.
         if (values.containsKey(NotePad.Notes.COLUMN_NAME_NOTE) == false) {
             values.put(NotePad.Notes.COLUMN_NAME_NOTE, "");
+        }
+        //字体默认
+        if (!values.containsKey(NotePad.Notes.COLUMN_NAME_FONT_COLOR)) {
+            values.put(NotePad.Notes.COLUMN_NAME_FONT_COLOR, "#000000");
         }
 
         // Opens the database object in "write" mode.

@@ -31,7 +31,11 @@ public final class NotePad {
     // This class cannot be instantiated
     private NotePad() {
     }
-
+    public static final class CategoryInfo {
+        public static final String TABLE_NAME = "CategoryInfo";
+        public static final String _ID = "_id";
+        public static final String COLUMN_NAME_CATEGORY = "category";
+    }
     /**
      * Notes table contract
      */
@@ -88,20 +92,20 @@ public final class NotePad {
          * append a numeric note id to this Uri to retrieve a note
          */
         public static final Uri CONTENT_ID_URI_BASE
-            = Uri.parse(SCHEME + AUTHORITY + PATH_NOTE_ID);
+                = Uri.parse(SCHEME + AUTHORITY + PATH_NOTE_ID);
 
         /**
          * The content URI match pattern for a single note, specified by its ID. Use this to match
          * incoming URIs or to construct an Intent.
          */
         public static final Uri CONTENT_ID_URI_PATTERN
-            = Uri.parse(SCHEME + AUTHORITY + PATH_NOTE_ID + "/#");
+                = Uri.parse(SCHEME + AUTHORITY + PATH_NOTE_ID + "/#");
 
         /**
          * The content Uri pattern for a notes listing for live folders
          */
         public static final Uri LIVE_FOLDER_URI
-            = Uri.parse(SCHEME + AUTHORITY + PATH_LIVE_FOLDER);
+                = Uri.parse(SCHEME + AUTHORITY + PATH_LIVE_FOLDER);
 
         /*
          * MIME type definitions
@@ -133,6 +137,7 @@ public final class NotePad {
          */
         public static final String COLUMN_NAME_TITLE = "title";
 
+//        public static final String COLUMN_NAME_TIME = "time";
         /**
          * Column name of the note content
          * <P>Type: TEXT</P>
@@ -150,5 +155,18 @@ public final class NotePad {
          * <P>Type: INTEGER (long from System.curentTimeMillis())</P>
          */
         public static final String COLUMN_NAME_MODIFICATION_DATE = "modified";
+
+        public static final String COLUMN_NAME_CATEGORY = "category";
+        /**
+         * Column name for the background image of the note
+         * <P>Type: TEXT (path to the image file)</P>
+         */
+        public static final String COLUMN_NAME_BACKGROUND_IMAGE = "background_image";
+
+        /**
+         * Column name for the font color of the note
+         * <P>Type: TEXT (color value, e.g., "#FF0000" for red)</P>
+         */
+        public static final String COLUMN_NAME_FONT_COLOR = "font_color";
     }
 }

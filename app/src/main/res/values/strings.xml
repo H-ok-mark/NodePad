@@ -36,10 +36,11 @@
     <string name="text_title">Title:</string>
 
     <string name="resolve_edit">Edit note</string>
-    <string name="resolve_title">Edit title</string>
+    <string name="resolve_title">Edit Title</string>
 
     <string name="error_title">Error</string>
     <string name="error_message">Error loading note</string>
     <string name="nothing_to_save">There is nothing to save</string>
-    <string name="export">export</string>
+    <string name="export">Export</string>
+    <string name="font_color">Font Color</string>
 </resources>

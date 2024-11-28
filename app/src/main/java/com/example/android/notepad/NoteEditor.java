@@ -32,6 +32,7 @@ import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -45,19 +46,25 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * This Activity handles "editing" a note, where editing is responding to
@@ -476,8 +483,103 @@ public class NoteEditor extends Activity {
         case R.id.menu_export:
             export();
             break;
+        case R.id.menu_edit_font_color:
+            showFontPickerDialog();
+            break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    //字体颜色
+    private void showFontPickerDialog() {
+        // 创建颜色列表
+        List<ColorItem> colorItems = Arrays.asList(
+                new ColorItem(Color.BLACK, "黑色"),
+                new ColorItem(Color.RED, "红色"),
+                new ColorItem(Color.GREEN, "绿色"),
+                new ColorItem(Color.BLUE, "蓝色"),
+                new ColorItem(Color.YELLOW, "黄色"),
+                new ColorItem(Color.MAGENTA, "洋红"),
+                new ColorItem(Color.CYAN, "青色"),
+                new ColorItem(Color.GRAY, "灰色")
+        );
+
+        // 创建适配器
+        ColorAdapter adapter = new ColorAdapter(this, colorItems);
+
+        // 创建对话框
+        new AlertDialog.Builder(this)
+                .setTitle("选择字体颜色")
+                .setAdapter(adapter, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // 获取用户选择的颜色
+                        int selectedColor = colorItems.get(which).getColor();
+                        // 更新 EditText 的字体颜色
+                        mText.setTextColor(selectedColor);
+                        // 将选择的颜色同步到数据库
+                        updateFontColor(selectedColor);
+                    }
+                })
+                .show();
+    }
+    private void updateFontColor(int color) {
+        // 创建 ContentValues 对象以存储要更新的值
+        ContentValues values = new ContentValues();
+        values.put(NotePad.Notes.COLUMN_NAME_FONT_COLOR, String.format("#%06X", (0xFFFFFF & color))); // 将颜色转换为字符串
+
+//         更新数据库中对应的记录
+        getContentResolver().update(
+                mUri,         // 要更新的 URI
+                values,       // 要更新的值
+                null,         // 不需要选择条件
+                null          // 不需要选择参数
+        );
+    }
+    private class ColorAdapter extends ArrayAdapter<ColorItem> {
+        private Context context;
+        private List<ColorItem> colorItems;
+
+        public ColorAdapter(Context context, List<ColorItem> colorItems) {
+            super(context, 0, colorItems);
+            this.context = context;
+            this.colorItems = colorItems;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                convertView = LayoutInflater.from(context).inflate(R.layout.color_item, parent, false);
+            }
+
+            ColorItem colorItem = colorItems.get(position);
+
+            View colorPreview = convertView.findViewById(R.id.color_preview);
+            TextView colorName = (TextView) convertView.findViewById(R.id.color_name);
+
+            colorPreview.setBackgroundColor(colorItem.getColor());
+            colorName.setText(colorItem.getName());
+
+            return convertView;
+        }
+    }
+
+    private static class ColorItem {
+        private int color;
+        private String name;
+
+        public ColorItem(int color, String name) {
+            this.color = color;
+            this.name = name;
+        }
+
+        public int getColor() {
+            return color;
+        }
+
+        public String getName() {
+            return name;
+        }
     }
 
 //BEGIN_INCLUDE(paste)
