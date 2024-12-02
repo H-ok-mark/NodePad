@@ -133,12 +133,13 @@ private String formatDate(long timestamp) {
     // 将时间戳转换为 Date 对象，并格式化为字符串
     return dateFormat.format(new Date(timestamp));
 }
-
+```
 ### 2.摘要内容展示
 #### 2.1 noteslist_item.xml
 线性布局中，外部容器是水平布局
 内部嵌套一个标题和内容的垂直布局
 ![image](https://github.com/user-attachments/assets/ae12668a-912d-40fe-a9ff-c5966255f679)
+
 ```
 <TextView
     android:id="@android:id/text1"
@@ -165,7 +166,9 @@ private String formatDate(long timestamp) {
 ![image](https://github.com/user-attachments/assets/e974d0d2-0293-4c99-8600-94425c0f9f82)
 
 ### 3.搜索功能
+
 #### 3.1 list_options_menu.xml
+
 + 增加搜索的控件和图片
 
 ![image](https://github.com/user-attachments/assets/8e081fcd-3088-4fbc-9ed6-652a8de6e9d1)
@@ -176,6 +179,7 @@ private String formatDate(long timestamp) {
     android:title="@string/menu_search"
     android:alphabeticShortcut='s'
     android:showAsAction="ifRoom"/>
+```
 
 #### 3.2 NotesList.java
 
@@ -216,6 +220,9 @@ case R.id.menu_search:
 }
 ```
 + 执行搜索操作
+
+```
+
 @Override
 protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -270,6 +277,7 @@ protected void onCreate(Bundle savedInstanceState) {
     );
     setListAdapter(adapter);
 }
+```
 #### 3.3 效果展示
 ![image](https://github.com/user-attachments/assets/b73b88b5-72d6-4af4-88e8-9c8940c9361d)
 ![image](https://github.com/user-attachments/assets/d52ff520-8593-4052-80b3-07dcd1e05898)
@@ -289,21 +297,21 @@ protected void onCreate(Bundle savedInstanceState) {
     <color name="item_background_color">#B1FDFDFD</color> <!-- 暗白色 -->
     <color name="text_color">#000000</color> <!-- 黑色 -->
 </resources>
-
+```
 #### 4.2 2.noteslist_item.xml
 + 更改Item条目的颜色
+```
   android:background="@color/item_background_color"
+```
 + 设置item字体显示
-  ```
+```
 <!--title-->
 android:textColor="@color/text_color"
 <!--content-->
 android:textColor="@color/content_color"
-
-
 <!-- timetamp-->
  android:textColor="@color/text_color"
-
+```
 ### 5.导出文件
 #### 5.1 editor_options_menu.xml
 ![image](https://github.com/user-attachments/assets/15c97f11-a401-4892-afca-b4b6483445f2)
@@ -314,6 +322,7 @@ android:textColor="@color/content_color"
 ```
 #### 5.2 NoteEditor.java
 ![image](https://github.com/user-attachments/assets/3bb22a67-5b33-42a9-afe3-2ea0b399f330)
+
 + 在本类中增加方法
 ```
 private static final int REQUEST_CODE_EXPORT = 100; // 100 是一个随意选定的
@@ -405,6 +414,7 @@ private void openFilePicker(String fileName) {
 ![image](https://github.com/user-attachments/assets/de692151-60cb-41df-9874-f8c0d8f6a9ae)
 
 public Uri insert(Uri uri, ContentValues initialValues)中
+
 ```
 增加字体默认颜色
 //字体默认
