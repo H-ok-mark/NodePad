@@ -6,9 +6,8 @@
 
 ### 基础功能
 
-+  **1.时间戳：** 每次保存笔记时自动生成时间戳，方便记录笔记时间。
-
-+  **2.笔记搜索：** 通过模糊搜索笔记标题，帮助你高效找到所需的笔记
++ **1.时间戳：** 每次保存笔记时自动生成时间戳，方便记录笔记时间。
++ **2.笔记搜索：** 通过模糊搜索笔记标题，帮助你高效找到所需的笔记
 
 ### 拓展功能
 
@@ -24,15 +23,15 @@
 
 ## 二、效果展示
 
-### + 时间戳+UI+摘要显示
++ ### 时间戳+UI+摘要显示
 ![image](https://github.com/user-attachments/assets/a589ef6b-a9b0-4fdc-a77c-5c2156b39a91)
-### + 搜索功能
++ ### 搜索功能
 <div>
   <img src="https://github.com/user-attachments/assets/996b7f00-11bc-404e-8fa3-ddd8751106f7" width="45%" style="display:inline-block; margin-right:5%">
   <img src="https://github.com/user-attachments/assets/85d1bb61-0ca3-4748-b0be-e06f0e141629" width="45%" style="display:inline-block;">
 </div>
 
-### + 导出笔记
++ ### 导出笔记
 
 <div>
   <img src="https://github.com/user-attachments/assets/76a11ffa-53f2-430c-aeee-a48c41b493ed" width="30%" />
@@ -40,7 +39,7 @@
   <img src="https://github.com/user-attachments/assets/dff220ca-f8b3-41b4-b88a-d0b934f6ce19" width="30%" />
 </div>
 
-### + 改变字体颜色
++ ### 改变字体颜色
 <div>
   <img src="https://github.com/user-attachments/assets/a273e7af-dc39-405d-b025-e2b6d851bf6f" width="30%" />
   <img src="https://github.com/user-attachments/assets/602d97ea-6fd4-408f-af40-d0d4b25ff1c8" width="30%" />
@@ -52,6 +51,7 @@
 #### 1.1 noteslist_item.xml 
 + 添加timetamp控件布局
 ![image](https://github.com/user-attachments/assets/e8d64179-3889-4b7b-a5a2-657f62d4c935)
+
 ```
 <TextView
     android:id="@android:id/text2"
@@ -66,7 +66,7 @@
 ```
 #### 1.2 NotesList.java
 + 增加PROJECTION
-  ![image](https://github.com/user-attachments/assets/4c31f161-f11e-4e4a-b1e2-2acc6f5f14c5)
+![image](https://github.com/user-attachments/assets/4c31f161-f11e-4e4a-b1e2-2acc6f5f14c5)
   ```
 private static final String[] PROJECTION = new String[] {
       NotePad.Notes._ID, // 0
@@ -109,11 +109,10 @@ protected void onCreate(Bundle savedInstanceState)方法中：
     // 设置ListView的适配器
     setListAdapter(adapter);
 }
-
+```
 
 + 格式化时间戳为日期字符串
 ![image](https://github.com/user-attachments/assets/cae1e780-a805-49ec-8cbd-1bf2af6bbdc6)
-
 ```
 private String formatDate(long timestamp) {
     // 创建一个日期格式化器
@@ -157,7 +156,7 @@ private String formatDate(long timestamp) {
 ### 3.搜索功能
 #### 3.1 list_options_menu.xml
 + 增加搜索的控件和图片
-  ![image](https://github.com/user-attachments/assets/8e081fcd-3088-4fbc-9ed6-652a8de6e9d1)
+![image](https://github.com/user-attachments/assets/8e081fcd-3088-4fbc-9ed6-652a8de6e9d1)
 
 ```
 <item android:id="@+id/menu_search"
@@ -264,7 +263,7 @@ protected void onCreate(Bundle savedInstanceState) {
 ### 4.UI美化
 #### 4.1 color.xml
 + 自定义背景资源文件
-  ![image](https://github.com/user-attachments/assets/b03cb62e-83eb-4dd4-806b-7da7cb4b8115)
+![image](https://github.com/user-attachments/assets/b03cb62e-83eb-4dd4-806b-7da7cb4b8115)
   ```
   <resources>
     <color name="my_custom_color">#FF0000</color> <!-- 红色 -->
@@ -393,7 +392,7 @@ if (!values.containsKey(NotePad.Notes.COLUMN_NAME_FONT_COLOR)) {
 ```
 #### 6.3 NoteEditor.java
 + 增加switch选项
-  ![image](https://github.com/user-attachments/assets/f12e74f1-7900-4551-b0c2-fc1c55a46e7c)
+![image](https://github.com/user-attachments/assets/f12e74f1-7900-4551-b0c2-fc1c55a46e7c)
 + 实现相应的方法
 ```
   //字体颜色
