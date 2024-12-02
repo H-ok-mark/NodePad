@@ -24,7 +24,9 @@
 ## 二、效果展示
 
 + ### 时间戳+UI+摘要显示
+
 ![image](https://github.com/user-attachments/assets/a589ef6b-a9b0-4fdc-a77c-5c2156b39a91)
+
 + ### 搜索功能
 <div>
   <img src="https://github.com/user-attachments/assets/996b7f00-11bc-404e-8fa3-ddd8751106f7" width="45%" style="display:inline-block; margin-right:5%">
@@ -49,7 +51,9 @@
 ## 三、具体实现
 ### 1. 时间戳显示
 #### 1.1 noteslist_item.xml 
+
 + 添加timetamp控件布局
+
 ![image](https://github.com/user-attachments/assets/e8d64179-3889-4b7b-a5a2-657f62d4c935)
 
 ```
@@ -65,7 +69,9 @@
     android:textColor="@color/text_color"/>
 ```
 #### 1.2 NotesList.java
+
 + 增加PROJECTION
+
 ![image](https://github.com/user-attachments/assets/4c31f161-f11e-4e4a-b1e2-2acc6f5f14c5)
   ```
 private static final String[] PROJECTION = new String[] {
@@ -73,9 +79,9 @@ private static final String[] PROJECTION = new String[] {
       NotePad.Notes.COLUMN_NAME_TITLE, // 1
       NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE // Date
 };
-
+```
+ 
 + 显示
-
 protected void onCreate(Bundle savedInstanceState)方法中：
  ```
  // 创建映射列和视图ID
@@ -110,8 +116,8 @@ protected void onCreate(Bundle savedInstanceState)方法中：
     setListAdapter(adapter);
 }
 ```
-
 + 格式化时间戳为日期字符串
+  
 ![image](https://github.com/user-attachments/assets/cae1e780-a805-49ec-8cbd-1bf2af6bbdc6)
 ```
 private String formatDate(long timestamp) {
@@ -147,15 +153,21 @@ private String formatDate(long timestamp) {
 ```
 #### 2.2 NoteLists.java
 + 增加内容列
+
 ![image](https://github.com/user-attachments/assets/96c7d768-978b-4d39-998d-20c730c65c52)
+
 + 创建映射列和视图ID
+
 ![image](https://github.com/user-attachments/assets/a0d535f7-fc30-4417-a899-2d6a899a01db)
+
 #### 2.3 效果展示
+
 ![image](https://github.com/user-attachments/assets/e974d0d2-0293-4c99-8600-94425c0f9f82)
 
 ### 3.搜索功能
 #### 3.1 list_options_menu.xml
 + 增加搜索的控件和图片
+
 ![image](https://github.com/user-attachments/assets/8e081fcd-3088-4fbc-9ed6-652a8de6e9d1)
 
 ```
@@ -164,8 +176,9 @@ private String formatDate(long timestamp) {
     android:title="@string/menu_search"
     android:alphabeticShortcut='s'
     android:showAsAction="ifRoom"/>
-```
+
 #### 3.2 NotesList.java
+
 + 显示输入操作
 ```
 public boolean onOptionsItemSelected(MenuItem item) {
@@ -260,9 +273,13 @@ protected void onCreate(Bundle savedInstanceState) {
 #### 3.3 效果展示
 ![image](https://github.com/user-attachments/assets/b73b88b5-72d6-4af4-88e8-9c8940c9361d)
 ![image](https://github.com/user-attachments/assets/d52ff520-8593-4052-80b3-07dcd1e05898)
+
 ### 4.UI美化
+
 #### 4.1 color.xml
+
 + 自定义背景资源文件
+
 ![image](https://github.com/user-attachments/assets/b03cb62e-83eb-4dd4-806b-7da7cb4b8115)
   ```
   <resources>
@@ -375,13 +392,18 @@ private void openFilePicker(String fileName) {
 ### 6.改变字体颜色
 #### 6.1 editor_options_menu.xml
 + 增加控件
+
 ![image](https://github.com/user-attachments/assets/9214b5ef-07a2-4951-b241-a34cb639688a)
 
 #### 6.2 NotePadProvider.java
 + 在原有的数据库表中增加颜色字段
-  ![image](https://github.com/user-attachments/assets/702d3f1a-82bf-485b-97b0-4ab6f854cddb)
+
+![image](https://github.com/user-attachments/assets/702d3f1a-82bf-485b-97b0-4ab6f854cddb)
+
 + 增加字体颜色的映射
-  ![image](https://github.com/user-attachments/assets/de692151-60cb-41df-9874-f8c0d8f6a9ae)
+
+![image](https://github.com/user-attachments/assets/de692151-60cb-41df-9874-f8c0d8f6a9ae)
+
 public Uri insert(Uri uri, ContentValues initialValues)中
 ```
 增加字体默认颜色
@@ -392,7 +414,9 @@ if (!values.containsKey(NotePad.Notes.COLUMN_NAME_FONT_COLOR)) {
 ```
 #### 6.3 NoteEditor.java
 + 增加switch选项
+
 ![image](https://github.com/user-attachments/assets/f12e74f1-7900-4551-b0c2-fc1c55a46e7c)
+
 + 实现相应的方法
 ```
   //字体颜色
