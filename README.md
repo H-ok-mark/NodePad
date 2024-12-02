@@ -63,7 +63,7 @@
     android:textSize="15sp"
     android:singleLine="true"
     android:textColor="@color/text_color"/>
-
+```
 #### 1.2 NotesList.java
 + 增加PROJECTION
   ![image](https://github.com/user-attachments/assets/4c31f161-f11e-4e4a-b1e2-2acc6f5f14c5)
@@ -369,16 +369,16 @@ private void openFilePicker(String fileName) {
     startActivityForResult(intent, REQUEST_CODE_EXPORT);
 }
 ```
-### 5.3 效果展示
+#### 5.3 效果展示
 ![image](https://github.com/user-attachments/assets/954c513c-5c62-4b8c-9281-ece1355da11f)
 ![image](https://github.com/user-attachments/assets/24e5b58f-b5e2-4252-9916-bcde9c30a008)
 
-## 6.改变字体颜色
-### 6.1 editor_options_menu.xml
+### 6.改变字体颜色
+#### 6.1 editor_options_menu.xml
 + 增加控件
 ![image](https://github.com/user-attachments/assets/9214b5ef-07a2-4951-b241-a34cb639688a)
 
-### 6.2 NotePadProvider.java
+#### 6.2 NotePadProvider.java
 + 在原有的数据库表中增加颜色字段
   ![image](https://github.com/user-attachments/assets/702d3f1a-82bf-485b-97b0-4ab6f854cddb)
 + 增加字体颜色的映射
@@ -391,7 +391,7 @@ if (!values.containsKey(NotePad.Notes.COLUMN_NAME_FONT_COLOR)) {
     values.put(NotePad.Notes.COLUMN_NAME_FONT_COLOR, "#000000");
 }
 ```
-### 6.3 3.NoteEditor.java
+#### 6.3 NoteEditor.java
 + 增加switch选项
   ![image](https://github.com/user-attachments/assets/f12e74f1-7900-4551-b0c2-fc1c55a46e7c)
 + 实现相应的方法
@@ -488,7 +488,7 @@ if (!values.containsKey(NotePad.Notes.COLUMN_NAME_FONT_COLOR)) {
         }
     }
 ```
-### 5.4 展示效果
+#### 6.4 展示效果
 ![image](https://github.com/user-attachments/assets/9f1aad8c-c7f3-4c31-8787-35621a073f91)
 ![image](https://github.com/user-attachments/assets/9e0d5543-ae72-4341-b3ef-cf6aa3d53da0)
 ![image](https://github.com/user-attachments/assets/2fb051b2-0e7d-4cfd-bbd1-5f5f0d070800)
